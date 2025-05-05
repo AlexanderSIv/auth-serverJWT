@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /epill
+jwt:
+  secret: slojdf56l6idfgh4nlidgd1f52gf2dgfh34234fjghsjgg545dg
+  lifetime: 30m
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/userdb
+    username: root
+    password: qweasd
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    database: mysql
