@@ -3,6 +3,9 @@ package com.epills.auth_server.controllers;
 
 import com.epills.auth_server.dtos.JwtRequest;
 import com.epills.auth_server.dtos.JwtResponse;
+import com.epills.auth_server.dtos.RegistrationUserDTO;
+import com.epills.auth_server.dtos.UserDTO;
+import com.epills.auth_server.entities.User;
 import com.epills.auth_server.exceptions.ApplicationError;
 import com.epills.auth_server.service.UserService;
 import com.epills.auth_server.utils.JwtUtils;
@@ -34,5 +37,17 @@ public class AuthController {
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
         String token = jwtUtils.generateToken(userDetails);
         return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> createNewUser(@RequestBody RegistrationUserDTO registrationUserDTO) {
+        if(!registrationUserDTO.getPassword().equals(registrationUserDTO.getConfirmPassword())) {
+            return new ResponseEntity<>(new ApplicationError(HttpStatus.BAD_REQUEST.value(), "Пароли не совпадают"), HttpStatus.BAD_REQUEST);
+        }
+        if(userService.findByUsername(registrationUserDTO.getUsername()).isPresent()) {
+            return new ResponseEntity<>(new ApplicationError(HttpStatus.BAD_REQUEST.value(),"Позьзователь с указанным логином уже существует"), HttpStatus.BAD_REQUEST);
+        }
+        User newUser = userService.createUser(registrationUserDTO);
+        return ResponseEntity.ok(new UserDTO(newUser.getId(),newUser.getUsername(),newUser.getEmail()));
     }
 }

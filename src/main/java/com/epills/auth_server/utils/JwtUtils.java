@@ -3,11 +3,13 @@ package com.epills.auth_server.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.SignatureException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,15 +40,17 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUsername(String token) {
+
+    public String getUsername(String token) throws SignatureException{
         return getClaimsFromToken(token).getSubject();
     }
 
-    public List<String> getRoles(String token) {
+
+    public List<String> getRoles(String token){
         return getClaimsFromToken(token).get("roles", List.class);
     }
 
-    private Claims getClaimsFromToken(String token) {
+    private Claims getClaimsFromToken(String token){
         return Jwts.parser()
                 .setSigningKey(secret)
                 .build()

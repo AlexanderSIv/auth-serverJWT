@@ -1,5 +1,6 @@
 package com.epills.auth_server.service;
 
+import com.epills.auth_server.dtos.RegistrationUserDTO;
 import com.epills.auth_server.entities.User;
 import com.epills.auth_server.repositories.RoleRepository;
 import com.epills.auth_server.repositories.UserRepository;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -48,8 +51,12 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public void createUser(User user) {
-        user.setRoles(List.of(roleRepository.findByName("ROLE_USER").get()));
-        userRepository.save(user);
+    public User createUser(RegistrationUserDTO registrationUserDTO) {
+        User newUser = new User();
+        newUser.setUsername(registrationUserDTO.getUsername());
+        newUser.setPassword(passwordEncoder.encode(registrationUserDTO.getPassword()));
+        newUser.setEmail(registrationUserDTO.getEmail());
+        newUser.setRoles(List.of(roleRepository.findByName("ROLE_USER").get()));
+        return userRepository.save(newUser);
     }
 }
