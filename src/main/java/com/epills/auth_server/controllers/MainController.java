@@ -2,9 +2,11 @@ package com.epills.auth_server.controllers;
 
 
 import com.epills.auth_server.dtos.DrugDTO;
+import com.epills.auth_server.dtos.EventDTO;
 import com.epills.auth_server.entities.Drug;
 import com.epills.auth_server.exceptions.ApplicationError;
 import com.epills.auth_server.service.DrugService;
+import com.epills.auth_server.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MainController {
     private final DrugService drugService;
+    private final EventService eventService;
 
     @GetMapping("/unsecured")
     public String unsecuredData() {
@@ -56,6 +59,12 @@ public class MainController {
         }
         Drug newDrug = drugService.addDrug(drugDTO);
         return ResponseEntity.ok("Запись о лекарстве успешно создана");
+    }
+
+    @PostMapping("/pill-swallowed")
+    public ResponseEntity<?> addEvent(Principal principal, @RequestBody EventDTO eventDTO){
+        eventService.createEvent(principal.getName(), eventDTO);
+        return ResponseEntity.ok("The pill was swallowed successfully!");
     }
 
 }
