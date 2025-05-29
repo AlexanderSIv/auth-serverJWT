@@ -4,7 +4,7 @@ server:
     context-path: /epill
 jwt:
   secret: slojdf56l6idfgh4nlidgd1f52gf2dgfh34234fjghsjgg545dg
-  lifetime: 30m
+  lifetime: 2h
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

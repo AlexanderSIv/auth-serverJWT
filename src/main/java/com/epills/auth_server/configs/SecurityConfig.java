@@ -59,6 +59,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/sign-up").permitAll()
                         .requestMatchers(HttpMethod.GET,"/secured").authenticated()
                         .requestMatchers(HttpMethod.GET,"/info").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/drugs/*").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/add-drug").authenticated()
                         .requestMatchers(HttpMethod.GET,"/admin").hasRole("ADMIN"))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
 //                .authenticationProvider(authenticationProvider())
